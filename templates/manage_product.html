@@ -1,0 +1,171 @@
+{% extends "base_admin.html" %}
+
+{% block head %}
+
+{% endblock head %}
+
+{% block content %}
+<div class="container mt-5">
+  <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Product</button>
+  <table class="table mt-4">
+    <thead class='th'>
+      <tr>
+        <th>Gambar</th>
+        <th>Nama</th>
+        <th>Deskripsi</th>
+        <th>Stok</th>
+        <th>Size</th>
+        <th>Harga</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data produk ditampilkan di sini -->
+      
+      {% for i in product %}
+        <tr>
+          <td  class="text-center align-middle"><img src="{{i.imageProduct.url}}" width="125rem" height="125rem"></td>
+          <td>{{i.nameProduct}}</td>
+          <td>{{i.descProduct}}</td>
+          
+          <td>{{i.stockProduct}}</td>
+          <td>{{i.sizeProduct}}</td>
+          <td>{{i.priceProduct}}</td>
+          <td>
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModalUpdate-{{i.id}}"><i class="fa-solid fa-pen shadow-none link-light"></i></button>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalDelete-{{i.id}}"><i class="fa-solid fa-trash shadow-none"></i></button>
+          </td>
+        </tr> 
+      {% endfor %}
+      <!-- Tambahkan baris produk lainnya sesuai kebutuhan -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Add -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addModalLabel">Add Produk</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form untuk menambah produk -->
+        <form method="POST" action="{% url 'product:create-product' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="addProductName" class="form-label">Nama Produk</label>
+            <input type="text" class="form-control" id="addProductName" name="nameProduct" required>
+          </div>
+          <div class="mb-3">
+            <label for="addProductDescription" class="form-label">Deskripsi Produk</label>
+            <textarea class="form-control" id="addProductDescription" name="descProduct" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="addProductStock" class="form-label">Stok</label>
+            <input type="number" class="form-control" id="addProductStock" name="stockProduct" required>
+          </div>
+          <div class="mb-3">
+            <label for="addProductSize" class="form-label">Size</label>
+            <select class="form-select" id="addProductSize" name="sizeProduct" required>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="addProductPrice" class="form-label">Harga</label>
+            <input type="text" class="form-control" id="addProductPrice" name="priceProduct" required>
+          </div>
+          <div class="mb-3">
+            <label for="addProductImage" class="form-label">Gambar Produk</label>
+            <input type="file" class="form-control" id="addProductImage" name="imageProduct" required>
+          </div>
+          <button type="submit" class="btn btn-success">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Update -->
+{% for u in product %}
+<div class="modal fade" id="exampleModalUpdate-{{u.id}}" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateModalLabel">Update Produk</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form untuk menambah produk -->
+        <form action="{% url 'product:update-product' %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="addProductImage" class="form-label">Gambar Produk</label>
+            <img src="{{ u.imageProduct.url }}" alt="Current Image" style="max-width: 100%; height: auto;">
+            
+            <input type="file" class="form-control" id="addProductImage" name="imageProduct" required>
+          </div>
+          <div class="mb-3">
+            <label for="addProductName" class="form-label">Nama Produk</label>
+            <input type="text" class="form-control" id="addProductName" name="nameProduct" value="{{u.nameProduct}}" required>
+          </div>
+          <div class="mb-3">
+            <label for="addProductDescription" class="form-label">Deskripsi Produk</label>
+            <textarea class="form-control" id="addProductDescription" name="descProduct" rows="3" required>{{u.descProduct}}</textarea>
+          </div>
+          <div class="mb-3">
+            <label for="addProductStock" class="form-label">Stok</label>
+            <input type="number" class="form-control" id="addProductStock" name="stockProduct" value="{{u.stockProduct}}" required>
+          </div>
+          <div class="mb-3">
+            <label for="addProductSize" class="form-label">Size</label>
+            <select class="form-select" id="ad  `vct" required>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="addProductPrice" class="form-label">Harga</label>
+            <input type="text" class="form-control" id="addProductPrice" name="priceProduct" value="{{u.priceProduct}}" required>
+          </div>
+          
+          <input type="hidden" name="id" value="{{u.id}}">
+          <button type="submit" class="btn btn-success">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% for d in product %}
+<div class="modal fade" id="exampleModalDelete-{{d.id}}" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <h5>Yakin yakin menghapus Product '{{d.nameProduct}}'?</h5>
+         <form method="POST" action="{% url 'product:delete-product' %}">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{d.id}}">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endfor %}
+{% endblock content %}

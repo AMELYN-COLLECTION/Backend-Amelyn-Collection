@@ -2,18 +2,18 @@ from django.db import models
 
 class Product(models.Model):
     SIZE_CHOICES = [
-        ('s', 'S'),
-        ('m', 'M'),
-        ('l', 'L'),
-        ('xl', 'XL'),
+        ('S', 'S'),
+        ('M', 'M'),
+        ('L', 'L'),
+        ('XL', 'XL'),
     ]
     
-    nameProduct = models.CharField(max_length=100)
-    priceProduct = models.IntegerField()
     imageProduct = models.ImageField(upload_to="upload/menu/")
+    nameProduct = models.CharField(max_length=100)
     descProduct = models.CharField(max_length=100)
     sizeProduct = models.CharField(max_length=2, choices=SIZE_CHOICES)
     stockProduct = models.PositiveIntegerField()
+    priceProduct = models.IntegerField()
     
     def __str__(self):
         return self.name
