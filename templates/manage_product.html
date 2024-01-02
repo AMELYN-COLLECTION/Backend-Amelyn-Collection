@@ -1,30 +1,92 @@
 {% extends "base_admin.html" %}
+{% load static %}
 
-{% block head %}
-
-{% endblock head %}
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/manage_product.css' %}">
+{% endblock header %}
 
 {% block content %}
-<div class="container mt-5">
-  <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Product</button>
-  <table class="table mt-4">
-    <thead class='th'>
-      <tr>
-        <th>Gambar</th>
-        <th>Nama</th>
-        <th>Deskripsi</th>
-        <th>Stok</th>
-        <th>Size</th>
-        <th>Harga</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Data produk ditampilkan di sini -->
-      
-      {% for i in product %}
+<div class="container">
+  <div class="menu">
+      <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+          <div class="position-sticky">
+              <ul class="nav flex-column">
+                  <li class="nav-item">
+                      <h5 class="nav-link text-light">Amelyn<br>Collection</h5>
+                  </li>
+              </ul>
+          </div>
+          <div class="position-sticky button-list">
+              <ul class="nav flex-column mt-5  nav-custom">
+                  <li class="nav-item mt-3 text-start">
+                      <a class="nav-link text-light" href="#" id="menuSieBar">
+                          <img src="{% static 'images/dashboard.png' %}" class="list-imagea">
+                          Dashboard</a>
+                  </li>
+                  <li class="nav-item mt-4">
+                      <a class="nav-link text-light" href="#" id="menuSieBar">
+                          <img src="{% static 'images/icons8-cloth-96 1.png' %}" class="list-imageb">
+                          Product</a>
+                  </li>
+                  <li class="nav-item mt-4">
+                      <a class="nav-link text-light" href="#" id="menuSieBar">
+                          <img src="{% static 'images/icons8-order-48 1.png' %}" class="list-imagec">
+                          Order</a>
+                  </li>
+                  <li class="nav-item mt-4">
+
+                      <a class="nav-link text-light" href="#" id="menuSieBar">
+                          <img src="{% static 'images/icons8-package-50 1.png'%}" class="list-imaged">
+                          Delivery</a>
+                  </li>
+                  <li class="nav-item mt-4">
+                      <a class="nav-link text-light" href="#" id="menuSieBar">
+                          <img src="{% static 'images/icons8-male-user-96 1.png'%}" class="list-imagee">
+                          User</a>
+                  </li>
+              </ul>
+          </div>
+      </nav>
+  </div>
+
+  <div class="header">
+      <div class="dashboard">
+          <a href=""> <img src="{% static 'images/icons8-log-out-32.png'%}" style="width: 20px; height: 20px;" class="Log-Out"></a>
+      </div>
+
+      <div class="content">
+          <h1>Product</h1>
+
+      </div>
+  </div>
+
+  <div class="search">
+      <img src="{% static 'images/icons8-search-50.png'%}" class="search-icon">
+      <input type="search" placeholder="search">
+  </div>
+
+  <div class="button">
+    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Product</button>
+  </div>
+
+  <div class="table-container">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>Gambar Produk</th>
+                  <th>Nama Produk</th>
+                  <th>Deskripsi</th>
+                  <th>Stok</th>
+                  <th>Size</th>
+                  <th>Harga Product</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Isi tabel dapat ditambahkan di sini -->
+              {% for i in product %}
         <tr>
-          <td  class="text-center align-middle"><img src="{{i.imageProduct.url}}" width="125rem" height="125rem"></td>
+          <td  class="text-center"><img src="{{i.imageProduct.url}}" width="125rem" height="125rem" style="border-radius: 10px;"></td>
           <td>{{i.nameProduct}}</td>
           <td>{{i.descProduct}}</td>
           
@@ -37,11 +99,10 @@
           </td>
         </tr> 
       {% endfor %}
-      <!-- Tambahkan baris produk lainnya sesuai kebutuhan -->
-    </tbody>
-  </table>
+          </tbody>
+      </table>
+  </div>
 </div>
-
 <!-- Modal Add -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -54,6 +115,7 @@
         <!-- Form untuk menambah produk -->
         <form method="POST" action="{% url 'product:create-product' %}" enctype="multipart/form-data">
           {% csrf_token %}
+          
           <div class="mb-3">
             <label for="addProductName" class="form-label">Nama Produk</label>
             <input type="text" class="form-control" id="addProductName" name="nameProduct" required>
@@ -79,10 +141,7 @@
             <label for="addProductPrice" class="form-label">Harga</label>
             <input type="text" class="form-control" id="addProductPrice" name="priceProduct" required>
           </div>
-          <div class="mb-3">
-            <label for="addProductImage" class="form-label">Gambar Produk</label>
-            <input type="file" class="form-control" id="addProductImage" name="imageProduct" required>
-          </div>
+          
           <button type="submit" class="btn btn-success">Add</button>
         </form>
       </div>
@@ -103,11 +162,18 @@
         <!-- Form untuk menambah produk -->
         <form action="{% url 'product:update-product' %}" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
-          <div class="mb-3">
+          
+          <input type="hidden" name="currentImage" value="{{ u.imageProduct.url }}">
+          
+          <div class="mb-3 position-relative">
             <label for="addProductImage" class="form-label">Gambar Produk</label>
-            <img src="{{ u.imageProduct.url }}" alt="Current Image" style="max-width: 100%; height: auto;">
-            
-            <input type="file" class="form-control" id="addProductImage" name="imageProduct" required>
+        
+            <!-- Container untuk gambar dengan radius border -->
+            <div class="image-container" style="max-width: 25%; height: 25%; border-radius: 10px; overflow: hidden; margin-bottom: 10px;">
+                <img src="{{ u.imageProduct.url }}" alt="Current Image" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        
+            <input type="file" class="form-control" id="addProductImage" name="imageProduct">
           </div>
           <div class="mb-3">
             <label for="addProductName" class="form-label">Nama Produk</label>
@@ -123,11 +189,11 @@
           </div>
           <div class="mb-3">
             <label for="addProductSize" class="form-label">Size</label>
-            <select class="form-select" id="ad  `vct" required>
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-              <option value="XL">XL</option>
+            <select class="form-select" id="addProductSize" name="sizeProduct" required>
+              <option value="S" {% if u.sizeProduct == 'S' %}selected{% endif %}>S</option>
+              <option value="M" {% if u.sizeProduct == 'M' %}selected{% endif %}>M</option>
+              <option value="L" {% if u.sizeProduct == 'L' %}selected{% endif %}>L</option>
+              <option value="XL" {% if u.sizeProduct == 'XL' %}selected{% endif %}>XL</option>
             </select>
           </div>
           <div class="mb-3">
@@ -168,4 +234,32 @@
 </div>
 </div>
 {% endfor %}
+<script>
+function updateImagePreview(productId) {
+  const inputId = `addProductImage-${productId}`;
+  const previewId = `imagePreview-${productId}`;
+  const inputElement = document.getElementById(inputId);
+  const previewElement = document.getElementById(previewId);
+
+  if (inputElement.files && inputElement.files.length > 0) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      previewElement.src = e.target.result;
+      console.log('New file selected:', inputElement.files[0].name);
+    }
+
+    reader.readAsDataURL(inputElement.files[0]);
+  } else {
+    // Jika tidak ada file baru yang dipilih, gunakan gambar saat ini
+    const currentImageInput = document.querySelector(`input[name="currentImage"][value="${previewElement.src}"]`);
+    if (currentImageInput) {
+      previewElement.src = currentImageInput.value;
+      console.log('No new file selected, using current image:', currentImageInput.value);
+    }
+  }
+}
+</script>
+
+
 {% endblock content %}

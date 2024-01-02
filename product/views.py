@@ -34,12 +34,19 @@ def createProduct(request):
 def updateProduct(request):
     if request.method == "POST":
         productId = request.POST.get('id')
-        image = request.FILES['imageProduct']
+        
         name = request.POST.get('nameProduct')
         price = request.POST.get('priceProduct')
         desc = request.POST.get('descProduct')
         size = request.POST.get('sizeProduct')
         stock = request.POST.get('stockProduct')
+        if 'imageProduct' in request.FILES:
+            image = request.FILES['imageProduct']
+        else:
+            # Jika tidak, gunakan gambar saat ini
+            product_obj = Product.objects.get(id=productId)
+            image = product_obj.imageProduct
+
         
         product_obj = Product.objects.get(id=productId)
         product_obj.imageProduct = image
@@ -53,9 +60,9 @@ def updateProduct(request):
             product_obj.save()
 
             messages.success(request, 'Success menambah menu baru')
-        except:
+        except Exception as e:
             messages.error(request, 'Failed menambah menu baru')
-            print(Exception)
+            print(e)
     return redirect('product:manage-product')
 
 def deleteProduct(request):
